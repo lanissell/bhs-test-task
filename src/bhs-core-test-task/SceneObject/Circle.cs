@@ -1,0 +1,27 @@
+﻿using System.Numerics;
+
+public sealed class Circle : SceneObject
+{
+    public Circle(Vector2 center, float radius, int segments = 32)
+    {
+        SetPosition(center);
+
+        Edges = new Edge[segments];
+        for (int i = 0; i < segments; i++)
+        {
+            float angle1 = 2 * MathF.PI * i / segments;
+            float angle2 = 2 * MathF.PI * (i + 1) / segments;
+
+            Vector2 point1 = new Vector2(
+                center.X + radius * MathF.Cos(angle1),
+                center.Y + radius * MathF.Sin(angle1)
+            );
+            Vector2 point2 = new Vector2(
+                center.X + radius * MathF.Cos(angle2),
+                center.Y + radius * MathF.Sin(angle2)
+            );
+
+            Edges[i] = new Edge(point1, point2);
+        }
+    }
+}
