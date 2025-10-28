@@ -6,7 +6,6 @@ public sealed class Circle : SceneObject
     {
         SetPosition(center);
 
-        Edges = new Edge[segments];
         for (int i = 0; i < segments; i++)
         {
             float angle1 = 2 * MathF.PI * i / segments;
@@ -21,7 +20,7 @@ public sealed class Circle : SceneObject
                 center.Y + radius * MathF.Sin(angle2)
             );
 
-            Edges[i] = new Edge(point1, point2);
+            Edges.Add(new Edge(point1, point2));
         }
     }
 }

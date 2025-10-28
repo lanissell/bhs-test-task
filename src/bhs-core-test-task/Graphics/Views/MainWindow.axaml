@@ -3,16 +3,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Graphics.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:views="clr-namespace:Graphics.Views"
+        mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="100"
         x:Class="Graphics.Views.MainWindow"
-        x:DataType="viewModels:MainWindowViewModel"
+        x:DataType="viewModels:EdgesViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Graphics">
+        Title="Graphics"
+        MinWidth="800"
+        MinHeight="600"
+        MaxWidth="800"
+        MaxHeight="600"
+        CanResize="False">
 
     <Design.DataContext>
-        <viewModels:MainWindowViewModel/>
+        <viewModels:EdgesViewModel />
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <views:DrawingControl Edges="{Binding Edges}"/>
 
 </Window>
