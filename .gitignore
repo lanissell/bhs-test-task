@@ -16,7 +16,6 @@ UserSettings
 ExportedObj/
 *.svd
 *.userprefs
-*.csproj
 *.pidb
 *.suo
 *.user
@@ -24,9 +23,6 @@ ExportedObj/
 *.booproj
 .vs
 .vsconfig
-
-# Ignore sln files by default, remove this directive if more advanced setup is required.
-*.sln
 
 # ============ #
 # OS generated #
