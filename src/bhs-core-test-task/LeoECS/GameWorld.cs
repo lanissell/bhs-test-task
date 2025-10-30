@@ -72,12 +72,12 @@ public class GameWorld
             ref var bounce = ref world.GetPool<BounceComponent>().Add(entity);
 
             sceneObj.SceneObject = ball;
-            movement.Speed = 2f + i * 0.5f;
+            movement.Speed = 1f;
             movement.Direction = Vector2.Normalize(new Vector2(
-                (float)Math.Sin(i) * 0.7f,
-                (float)Math.Cos(i) * 0.7f
+                0,
+                1
             ));
-            bounce.Bounciness = 0.9f;
+            bounce.Bounciness = 1f;
         }
 
         int halfSize = areaSize / 2;

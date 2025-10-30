@@ -15,10 +15,6 @@
         MaxHeight="600"
         CanResize="False">
 
-    <Design.DataContext>
-        <viewModels:EdgesViewModel />
-    </Design.DataContext>
-
     <views:DrawingControl Edges="{Binding Edges}"/>
 
 </Window>
