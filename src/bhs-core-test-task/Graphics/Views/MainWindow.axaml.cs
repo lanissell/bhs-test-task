@@ -9,7 +9,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        var timer = new System.Timers.Timer(10);
+        var timer = new System.Timers.Timer(1);
         timer.Elapsed += (s, e) =>
         {
             Dispatcher.UIThread.Post(() =>

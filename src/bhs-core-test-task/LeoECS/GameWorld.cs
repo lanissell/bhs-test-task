@@ -21,11 +21,13 @@ public class GameWorld
         world = new EcsWorld();
         systems = new EcsSystems(world);
 
-        // Register systems
+        // Register systems - now with separate collision and bounce systems
         systems
             .Add(new MovementSystem(world))
+            .Add(new CollisionSystem(world))
             .Add(new BounceSystem(world))
             .Init();
+
 
         // Create test entities
         CreateTestScene();
@@ -56,28 +58,28 @@ public class GameWorld
         int areaSize = 400;
 
         // Create bouncing balls
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 6; i++)
         {
             var ball = new Circle(
                 new Vector2(centerX + (i - 2) * 50, centerY - 100),
                 10,
-                16
+                8
             );
 
             Edges.AddRange(ball.Edges);
 
             var entity = world.NewEntity();
-            ref var sceneObj = ref world.GetPool<SceneObjectComponent>().Add(entity);
-            ref var movement = ref world.GetPool<MovementComponent>().Add(entity);
-            ref var bounce = ref world.GetPool<BounceComponent>().Add(entity);
 
+            // Add SceneObjectComponent
+            ref var sceneObj = ref world.GetPool<SceneObjectComponent>().Add(entity);
             sceneObj.SceneObject = ball;
-            movement.Speed = 1f;
-            movement.Direction = Vector2.Normalize(new Vector2(
-                0,
-                1
-            ));
-            bounce.Bounciness = 1f;
+
+            // Add MovementComponent
+            ref var movement = ref world.GetPool<MovementComponent>().Add(entity);
+            movement.Speed = 2f;
+            movement.Direction = new Vector2(0, 1);
+
+            world.GetPool<BounceComponent>().Add(entity);
         }
 
         int halfSize = areaSize / 2;
@@ -97,6 +99,7 @@ public class GameWorld
         Edges.AddRange(wall.Edges);
 
         var entity = world.NewEntity();
+
         ref var sceneObj = ref world.GetPool<SceneObjectComponent>().Add(entity);
         sceneObj.SceneObject = wall;
     }
