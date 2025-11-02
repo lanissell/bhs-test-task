@@ -1,26 +1,27 @@
-﻿using LeoECS.Components;
+﻿using System.Numerics;
+using LeoECS.Components;
 using Leopotam.EcsLite;
 
-namespace LeoECS.Systems;
-
-public class MovementSystem(EcsWorld world) : IEcsRunSystem
+namespace LeoECS.Systems
 {
-    private readonly EcsFilter movableEntities = world.Filter<SceneObjectComponent>().Inc<MovementComponent>().End();
-
-    private readonly EcsPool<SceneObjectComponent> sceneObjectComponents = world.GetPool<SceneObjectComponent>();
-    private readonly EcsPool<MovementComponent> movableComponents = world.GetPool<MovementComponent>();
-
-    public void Run(IEcsSystems systems)
+    public class MovementSystem(EcsWorld world) : IEcsRunSystem
     {
-        foreach (int entity in movableEntities)
+        private readonly EcsFilter _movableEntities = world.Filter<SceneObjectComponent>().Inc<MovementComponent>().End();
+        private readonly EcsPool<SceneObjectComponent> _sceneObjects = world.GetPool<SceneObjectComponent>();
+        private readonly EcsPool<MovementComponent> _movements = world.GetPool<MovementComponent>();
+
+        public void Run(IEcsSystems systems)
         {
-            ref var movementComponent = ref movableComponents.Get(entity);
-            ref var sceneObjectComponent = ref sceneObjectComponents.Get(entity);
+            foreach (int entity in _movableEntities)
+            {
+                ref var sceneObject = ref _sceneObjects.Get(entity);
+                ref var movement = ref _movements.Get(entity);
 
-            var sceneObject = sceneObjectComponent.SceneObject;
+                var velocity = movement.Direction * movement.Speed * Consts.FrameDeltaTime;
 
-            var newPosition = sceneObject.Position + movementComponent.Direction * movementComponent.Speed;
-            sceneObject.SetPosition(newPosition);
+                Vector2 newPosition = sceneObject.SceneObject.Position + velocity;
+                sceneObject.SceneObject.SetPosition(newPosition);
+            }
         }
     }
 }

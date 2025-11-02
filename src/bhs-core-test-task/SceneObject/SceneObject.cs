@@ -16,7 +16,10 @@ public abstract class SceneObject
             Edge edge = Edges[index];
             edge.VertexA += delta;
             edge.VertexB += delta;
+            edge.Pivot += delta;
             Edges[index] = edge;
         }
     }
+
+    public abstract CrossingResult GetEdgeCrossing(Edge edge);
 }

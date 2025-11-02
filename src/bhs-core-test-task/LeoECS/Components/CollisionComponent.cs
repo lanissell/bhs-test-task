@@ -12,5 +12,7 @@ namespace LeoECS.Components
 
         /// <summary>Normal at the contact point, pointing away from this entity.</summary>
         public Vector2 CollisionNormal;
+
+        public int CollisionFrame;
     }
 }

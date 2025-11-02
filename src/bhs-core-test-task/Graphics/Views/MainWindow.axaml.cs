@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
+using LeoECS;
 
 namespace Graphics.Views;
 
@@ -9,7 +10,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        var timer = new System.Timers.Timer(1);
+        var timer = new System.Timers.Timer(Consts.FrameDeltaTime * 1000);
         timer.Elapsed += (s, e) =>
         {
             Dispatcher.UIThread.Post(() =>

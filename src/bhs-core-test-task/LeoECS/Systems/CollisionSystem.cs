@@ -6,23 +6,31 @@ namespace LeoECS.Systems
 {
     public class CollisionSystem(EcsWorld world) : IEcsRunSystem
     {
-        private readonly EcsFilter _movableEntities = world.Filter<SceneObjectComponent>().Inc<MovementComponent>().End();
-        private readonly EcsFilter _allEntities = world.Filter<SceneObjectComponent>().End();
+        private readonly EcsFilter _movableEntities = world.Filter<SceneObjectComponent>().Inc<MovementComponent>().Inc<CollisionComponent>().End();
+        private readonly EcsFilter _allEntities = world.Filter<SceneObjectComponent>().Inc<CollisionComponent>().End();
+
         private readonly EcsPool<SceneObjectComponent> _sceneObjects = world.GetPool<SceneObjectComponent>();
-        private readonly EcsPool<MovementComponent> _movements = world.GetPool<MovementComponent>();
         private readonly EcsPool<CollisionComponent> _collisions = world.GetPool<CollisionComponent>();
+
+        private int frame;
 
         public void Run(IEcsSystems systems)
         {
+            frame++;
+
             foreach (int entityA in _movableEntities)
             {
                 ref var sceneA = ref _sceneObjects.Get(entityA);
-                ref var movement = ref _movements.Get(entityA);
 
-                _collisions.Del(entityA); // clear previous collision
+                ref var collisionA = ref _collisions.Get(entityA);
 
-                Vector2 startPos = sceneA.SceneObject.Position;
-                Vector2 endPos = startPos + movement.Direction * movement.Speed;
+                if (collisionA.CollisionFrame != frame)
+                {
+                    // Reset collision info for this frame
+                    collisionA.OtherEntity = -1;
+                    collisionA.CollisionNormal = Vector2.Zero;
+                    collisionA.CollisionFrame = frame;
+                }
 
                 foreach (int entityB in _allEntities)
                 {
@@ -30,58 +38,32 @@ namespace LeoECS.Systems
 
                     ref var sceneB = ref _sceneObjects.Get(entityB);
 
-                    if (CheckInterpolatedCollision(sceneA.SceneObject, startPos, endPos, sceneB.SceneObject, out Vector2 normal))
+                    if (CheckCollision(sceneA.SceneObject, sceneB.SceneObject, out Vector2 normal))
                     {
-                        ref var collision = ref _collisions.Add(entityA);
-                        collision.OtherEntity = entityB;
-                        collision.CollisionNormal = normal;
-                        break; // first collision only
+                        collisionA.OtherEntity = entityB;
+                        collisionA.CollisionNormal = normal;
+                        collisionA.CollisionFrame = frame;
+                        break;
                     }
                 }
             }
         }
 
-        private bool CheckInterpolatedCollision(SceneObject a, Vector2 startPos, Vector2 endPos, SceneObject b, out Vector2 normal)
+        private bool CheckCollision(SceneObject a, SceneObject b, out Vector2 normal)
         {
             normal = Vector2.Zero;
-            Vector2 movement = endPos - startPos;
-            float distance = movement.Length();
 
-            if (distance < 0.0001f) return false;
-
-            // Use adaptive step based on distance and max step size
-            float maxStep = 0.04f; // smaller = higher quality
-            int steps = (int)Math.Ceiling(distance / maxStep);
-            Vector2 stepDelta = movement / steps;
-
-            Vector2 prevPos = startPos;
-
-            for (int i = 1; i <= steps; i++)
+            foreach (var edgeA in a.Edges)
             {
-                Vector2 interpPos = startPos + stepDelta * i;
-                Vector2 moveSegment = interpPos - prevPos;
+                var crossingResult = b.GetEdgeCrossing(edgeA);
 
-                foreach (var edgeA in a.Edges)
+                if (crossingResult.Intersects)
                 {
-                    Vector2 edgeStartA = edgeA.VertexA + (interpPos - a.Position);
-                    Vector2 edgeEndA = edgeA.VertexB + (interpPos - a.Position);
-
-                    foreach (var edgeB in b.Edges)
-                    {
-                        if (CollisionUtils.DoSegmentsIntersect(edgeStartA, edgeEndA, edgeB.VertexA, edgeB.VertexB, out Vector2 contact))
-                        {
-                            normal = CollisionUtils.EdgeNormal(edgeStartA, edgeEndA);
-                            if (Vector2.Dot(normal, b.Position - interpPos) < 0)
-                                normal = -normal;
-
-                            return true;
-                        }
-                    }
+                    Console.WriteLine(b.GetType().Name + " collided with " + a.GetType().Name);
+                    normal = crossingResult.Normal;
+                    return true;
                 }
-
-                prevPos = interpPos;
             }
-
             return false;
         }
     }

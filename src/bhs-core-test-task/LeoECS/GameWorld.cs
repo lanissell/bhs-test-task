@@ -2,6 +2,7 @@
 using LeoECS.Systems;
 using Leopotam.EcsLite;
 using System.Numerics;
+using LeoECS;
 
 public class GameWorld
 {
@@ -21,11 +22,14 @@ public class GameWorld
         world = new EcsWorld();
         systems = new EcsSystems(world);
 
-        // Register systems - now with separate collision and bounce systems
+        // Register systems in correct order:
+        // 1. CollisionSystem - detects collisions
+        // 2. BounceSystem - processes bounce on collision
+        // 3. MovementSystem - applies final movement
         systems
-            .Add(new MovementSystem(world))
             .Add(new CollisionSystem(world))
             .Add(new BounceSystem(world))
+            .Add(new MovementSystem(world))
             .Init();
 
 
@@ -47,7 +51,7 @@ public class GameWorld
         while (!cts.IsCancellationRequested)
         {
             systems?.Run();
-            await Task.Delay(1);
+            await Task.Delay((int)(Consts.FrameDeltaTime * 1000f));
         }
     }
 
@@ -55,13 +59,12 @@ public class GameWorld
     {
         int centerX = 400;
         int centerY = 300;
-        int areaSize = 400;
 
         // Create bouncing balls
-        for(int i = 0; i < 6; i++)
+        for(int i = 0; i < 5; i++)
         {
             var ball = new Circle(
-                new Vector2(centerX + (i - 2) * 50, centerY - 100),
+                new Vector2(centerX + (i - 2) * 50, centerY - 50),
                 10,
                 8
             );
@@ -76,20 +79,24 @@ public class GameWorld
 
             // Add MovementComponent
             ref var movement = ref world.GetPool<MovementComponent>().Add(entity);
-            movement.Speed = 2f;
+            movement.Speed = 150f;
             movement.Direction = new Vector2(0, 1);
 
+            world.GetPool<CollisionComponent>().Add(entity);
             world.GetPool<BounceComponent>().Add(entity);
         }
 
-        int halfSize = areaSize / 2;
-        CreateWall(new Vector2(centerX - halfSize, centerY - halfSize), new Vector2(centerX + halfSize, centerY - halfSize)); // Top
-        CreateWall(new Vector2(centerX - halfSize, centerY + halfSize), new Vector2(centerX + halfSize, centerY + halfSize)); // Bottom
-        CreateWall(new Vector2(centerX - halfSize, centerY - halfSize), new Vector2(centerX - halfSize, centerY + halfSize)); // Left
-        CreateWall(new Vector2(centerX + halfSize, centerY - halfSize), new Vector2(centerX + halfSize, centerY + halfSize)); // Right
+        // Create triangle walls
+        int triangleSize = 500;
+        float height = triangleSize * MathF.Sqrt(3) / 2;
 
-        CreateWall(new Vector2(centerX - 100, centerY - 50), new Vector2(centerX - 50, centerY));
-        CreateWall(new Vector2(centerX + 50, centerY - 30), new Vector2(centerX + 100, centerY + 20));
+        Vector2 top = new Vector2(centerX, centerY - height * 0.6f);
+        Vector2 bottomLeft = new Vector2(centerX - triangleSize / 2, centerY + height * 0.4f);
+        Vector2 bottomRight = new Vector2(centerX + triangleSize / 2, centerY + height * 0.4f);
+
+        CreateWall(top, bottomLeft);           // Left side
+        CreateWall(bottomLeft, bottomRight);   // Bottom
+        CreateWall(bottomRight, top);          // Right side
     }
 
     private void CreateWall(Vector2 start, Vector2 end)
@@ -102,5 +109,7 @@ public class GameWorld
 
         ref var sceneObj = ref world.GetPool<SceneObjectComponent>().Add(entity);
         sceneObj.SceneObject = wall;
+
+        world.GetPool<CollisionComponent>().Add(entity);
     }
 }

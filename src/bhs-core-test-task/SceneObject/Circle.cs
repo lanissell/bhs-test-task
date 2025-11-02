@@ -2,9 +2,13 @@
 
 public sealed class Circle : SceneObject
 {
+    private readonly float radius;
+
     public Circle(Vector2 center, float radius, int segments = 32)
     {
         SetPosition(center);
+
+        this.radius = radius;
 
         for (int i = 0; i < segments; i++)
         {
@@ -20,7 +24,27 @@ public sealed class Circle : SceneObject
                 center.Y + radius * MathF.Sin(angle2)
             );
 
-            Edges.Add(new Edge(point1, point2));
+            Edges.Add(new Edge(point1, point2, Position));
         }
+    }
+
+    public override CrossingResult GetEdgeCrossing(Edge edge)
+    {
+        var edgeRadius = Vector2.Distance(edge.Pivot, edge.VertexA );
+
+        Vector2 diff = edge.Pivot - Position;
+        float distance = diff.Length();
+        float minDistance = radius + edgeRadius;
+
+        if (distance >= minDistance)
+            return new CrossingResult(false);
+
+        // Normal points from this circle towards the other circle
+        Vector2 cNormal = Vector2.Normalize(diff) ;
+
+        // Intersection point on the surface of this circle
+        Vector2 cIntersectionPoint = Position + cNormal * radius;
+
+        return new CrossingResult(true, cIntersectionPoint, cNormal);
     }
 }
