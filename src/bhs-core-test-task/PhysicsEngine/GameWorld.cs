@@ -3,6 +3,7 @@ using LeoECS.Systems;
 using Leopotam.EcsLite;
 using System.Numerics;
 using LeoECS;
+using PhysicsEngine.Colliders;
 
 public class GameWorld
 {
@@ -74,8 +75,8 @@ public class GameWorld
             var entity = world.NewEntity();
 
             // Add SceneObjectComponent
-            ref var sceneObj = ref world.GetPool<SceneObjectComponent>().Add(entity);
-            sceneObj.SceneObject = ball;
+            ref var sceneObj = ref world.GetPool<PhysicsComponentWrapper>().Add(entity);
+            sceneObj.Component = new CirclePhysicsComponent(ball);
 
             // Add MovementComponent
             ref var movement = ref world.GetPool<MovementComponent>().Add(entity);
@@ -107,8 +108,8 @@ public class GameWorld
 
         var entity = world.NewEntity();
 
-        ref var sceneObj = ref world.GetPool<SceneObjectComponent>().Add(entity);
-        sceneObj.SceneObject = wall;
+        ref var sceneObj = ref world.GetPool<PhysicsComponentWrapper>().Add(entity);
+        sceneObj.Component = new LinePhysicsComponent(wall);
 
         world.GetPool<CollisionComponent>().Add(entity);
     }

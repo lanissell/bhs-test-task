@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LeoECS\LeoECS.csproj" />
+      <ProjectReference Include="..\Model\Model.csproj" />
+    </ItemGroup>
+
 </Project>

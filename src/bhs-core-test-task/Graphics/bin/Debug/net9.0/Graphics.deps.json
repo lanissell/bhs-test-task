@@ -14,7 +14,8 @@
           "Avalonia.Fonts.Inter": "11.3.6",
           "Avalonia.Themes.Fluent": "11.3.6",
           "CommunityToolkit.Mvvm": "8.2.1",
-          "LeoECS": "1.0.0"
+          "LeoECS": "1.0.0",
+          "PhysicsEngine": "1.0.0"
         },
         "runtime": {
           "Graphics.dll": {}
@@ -447,9 +448,6 @@
         }
       },
       "LeoECS/1.0.0": {
-        "dependencies": {
-          "SceneObject": "1.0.0"
-        },
         "runtime": {
           "LeoECS.dll": {
             "assemblyVersion": "1.0.0.0",
@@ -457,9 +455,21 @@
           }
         }
       },
-      "SceneObject/1.0.0": {
+      "Model/1.0.0": {
         "runtime": {
-          "SceneObject.dll": {
+          "Model.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "PhysicsEngine/1.0.0": {
+        "dependencies": {
+          "LeoECS": "1.0.0",
+          "Model": "1.0.0"
+        },
+        "runtime": {
+          "PhysicsEngine.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -681,7 +691,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "SceneObject/1.0.0": {
+    "Model/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PhysicsEngine/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

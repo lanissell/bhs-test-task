@@ -1,16 +1,17 @@
 ﻿using System.Numerics;
 using LeoECS.Components;
 using Leopotam.EcsLite;
+using PhysicsEngine.Colliders;
 
 namespace LeoECS.Systems
 {
     public class CollisionSystem(EcsWorld world) : IEcsRunSystem
     {
-        private readonly EcsFilter _movableEntities = world.Filter<SceneObjectComponent>().Inc<MovementComponent>().Inc<CollisionComponent>().End();
-        private readonly EcsFilter _allEntities = world.Filter<SceneObjectComponent>().Inc<CollisionComponent>().End();
+        private readonly EcsFilter movableEntities = world.Filter<PhysicsComponentWrapper>().Inc<MovementComponent>().Inc<CollisionComponent>().End();
+        private readonly EcsFilter collisionEntities = world.Filter<PhysicsComponentWrapper>().Inc<CollisionComponent>().End();
 
-        private readonly EcsPool<SceneObjectComponent> _sceneObjects = world.GetPool<SceneObjectComponent>();
-        private readonly EcsPool<CollisionComponent> _collisions = world.GetPool<CollisionComponent>();
+        private readonly EcsPool<PhysicsComponentWrapper> physicsObjects = world.GetPool<PhysicsComponentWrapper>();
+        private readonly EcsPool<CollisionComponent> collisions = world.GetPool<CollisionComponent>();
 
         private int frame;
 
@@ -18,11 +19,12 @@ namespace LeoECS.Systems
         {
             frame++;
 
-            foreach (int entityA in _movableEntities)
+            foreach (int entityA in movableEntities)
             {
-                ref var sceneA = ref _sceneObjects.Get(entityA);
+                ref var wrapperA = ref physicsObjects.Get(entityA);
+                var physicsObjA = wrapperA.Component;
 
-                ref var collisionA = ref _collisions.Get(entityA);
+                ref var collisionA = ref collisions.Get(entityA);
 
                 if (collisionA.CollisionFrame != frame)
                 {
@@ -32,13 +34,14 @@ namespace LeoECS.Systems
                     collisionA.CollisionFrame = frame;
                 }
 
-                foreach (int entityB in _allEntities)
+                foreach (int entityB in collisionEntities)
                 {
                     if (entityA == entityB) continue;
 
-                    ref var sceneB = ref _sceneObjects.Get(entityB);
+                    ref var wrapperB = ref physicsObjects.Get(entityB);
+                    var physicsObjB = wrapperB.Component;
 
-                    if (CheckCollision(sceneA.SceneObject, sceneB.SceneObject, out Vector2 normal))
+                    if (CheckCollision(physicsObjA, physicsObjB, out Vector2 normal))
                     {
                         collisionA.OtherEntity = entityB;
                         collisionA.CollisionNormal = normal;
@@ -49,13 +52,13 @@ namespace LeoECS.Systems
             }
         }
 
-        private bool CheckCollision(SceneObject a, SceneObject b, out Vector2 normal)
+        private bool CheckCollision(IPhysicsSceneObjectComponent a, IPhysicsSceneObjectComponent b, out Vector2 normal)
         {
             normal = Vector2.Zero;
 
-            foreach (var edgeA in a.Edges)
+            foreach (var edgeA in a.SceneObject.Edges)
             {
-                var crossingResult = b.GetEdgeCrossing(edgeA);
+                var crossingResult = b.CheckCollision(edgeA);
 
                 if (crossingResult.Intersects)
                 {

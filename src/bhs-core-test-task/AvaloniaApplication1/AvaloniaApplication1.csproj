@@ -9,11 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Models\"/>
-        <AvaloniaResource Include="Assets\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.3.6"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6"/>
@@ -23,11 +18,5 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\LeoECS\LeoECS.csproj" />
-      <ProjectReference Include="..\PhysicsEngine\PhysicsEngine.csproj" />
     </ItemGroup>
 </Project>
