@@ -1,7 +1,7 @@
 using System;
+using App.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Graphics.ViewModels;
 
 namespace Graphics;
 

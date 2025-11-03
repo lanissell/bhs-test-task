@@ -1,40 +1,53 @@
 ﻿using System.Numerics;
 using App.GameLoop;
+using App.Model;
+using Core.Physics.Components;
+using Core.Physics.Components.PhysicsComponent;
+using Core.Physics.Systems;
 using LeoECS;
-using LeoECS.Components;
 using LeoECS.Systems;
 using Leopotam.EcsLite;
-using PhysicsEngine.Colliders;
 
 namespace App;
 
+/// <summary>
+/// Manages the game scene containing all scene objects and ECS systems.
+/// </summary>
 public class Scene : IUpdateBehaviour
 {
+    /// <summary>
+    /// List of all objects in the scene.
+    /// </summary>
     public readonly List<SceneObject> SceneObjects = new List<SceneObject>();
 
     private EcsWorld world;
     private EcsSystems systems;
 
+    /// <summary>
+    /// Event raised when the scene state changes.
+    /// </summary>
     public event Action? SceneChanged;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Scene"/> class.
+    /// </summary>
     public Scene()
     {
         world = new EcsWorld();
         systems = new EcsSystems(world);
 
-        // Register systems in correct order:
-        // 1. CollisionSystem - detects collisions
-        // 2. BounceSystem - processes bounce on collision
-        // 3. MovementSystem - applies final movement
         systems
+            .Add(new MovementSystem(world))
             .Add(new CollisionSystem(world))
             .Add(new BounceSystem(world))
-            .Add(new MovementSystem(world))
             .Init();
 
             CreateScene();
     }
 
+    /// <summary>
+    /// Updates the scene by running all ECS systems.
+    /// </summary>
     public void Update()
     {
         systems.Run();

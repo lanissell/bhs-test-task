@@ -1,11 +1,24 @@
 ﻿using System.Numerics;
+using App.Model;
 
-namespace PhysicsEngine.Colliders;
+namespace Core.Physics.Components.PhysicsComponent;
 
+/// <summary>
+/// Physics component for line scene objects that handles collision detection with edges.
+/// </summary>
+/// <param name="line">The line scene object associated with this physics component.</param>
 public class LinePhysicsComponent (Line line): IPhysicsSceneObjectComponent
 {
+    /// <summary>
+    /// Gets the scene object associated with this physics component.
+    /// </summary>
     public SceneObject SceneObject => line;
 
+    /// <summary>
+    /// Checks for collision between the given edge and this line's edges.
+    /// </summary>
+    /// <param name="edge">The edge to check for collision against.</param>
+    /// <returns>A collision result containing intersection data if collision occurred.</returns>
     public Collision CheckCollision(Edge edge)
     {
         var edges = SceneObject.Edges;

@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeoECS", "LeoECS\LeoECS.csproj", "{1540529C-B98D-416F-BE18-243E1C6691FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "View", "View\View.csproj", "{E9760C7F-8430-4A59-9FF8-B35FB539D94B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graphics", "Graphics\Graphics.csproj", "{E9760C7F-8430-4A59-9FF8-B35FB539D94B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{598400ED-FEC3-4FC9-8960-ECA3C4951E7B}"
 EndProject

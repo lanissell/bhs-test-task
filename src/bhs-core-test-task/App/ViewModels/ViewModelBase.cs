@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Graphics.ViewModels;
+namespace App.ViewModels;
 
+/// <summary>
+/// Base class for all view models providing property change notifications.
+/// </summary>
 public class ViewModelBase : ObservableObject
 {
 }

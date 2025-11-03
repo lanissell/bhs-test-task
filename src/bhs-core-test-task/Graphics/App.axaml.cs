@@ -4,8 +4,8 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using App;
 using App.GameLoop;
+using App.ViewModels;
 using Avalonia.Markup.Xaml;
-using Graphics.ViewModels;
 using Graphics.Views;
 
 namespace Graphics;

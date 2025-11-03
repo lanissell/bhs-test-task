@@ -1,10 +1,24 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
+namespace App.Model;
+
+/// <summary>
+/// Represents a circular scene object composed of multiple edge segments.
+/// </summary>
 public sealed class Circle : SceneObject
 {
+    /// <summary>
+    /// Gets the radius of the circle.
+    /// </summary>
     public float Radius { get; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Circle"/> class.
+    /// </summary>
+    /// <param name="center">The center position of the circle.</param>
+    /// <param name="radius">The radius of the circle.</param>
+    /// <param name="segments">The number of segments to approximate the circle.</param>
     public Circle(Vector2 center, float radius, int segments = 32)
     {
         SetPosition(center);

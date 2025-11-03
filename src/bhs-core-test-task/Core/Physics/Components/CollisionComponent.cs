@@ -1,18 +1,24 @@
 ﻿using System.Numerics;
 
-namespace LeoECS.Components
+namespace Core.Physics.Components;
+
+/// <summary>
+/// Component that stores collision information for an entity.
+/// </summary>
+public struct CollisionComponent
 {
     /// <summary>
-    /// Stores information about a collision detected in this frame.
+    /// The entity ID of the other colliding entity.
     /// </summary>
-    public struct CollisionComponent
-    {
-        /// <summary>Entity collided with.</summary>
-        public int OtherEntity;
+    public int OtherEntity;
 
-        /// <summary>Normal at the contact point, pointing away from this entity.</summary>
-        public Vector2 CollisionNormal;
+    /// <summary>
+    /// The normal vector at the collision point.
+    /// </summary>
+    public Vector2 CollisionNormal;
 
-        public int CollisionFrame;
-    }
+    /// <summary>
+    /// The frame number when the collision occurred.
+    /// </summary>
+    public int CollisionFrame;
 }

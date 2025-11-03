@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using App.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Graphics.ViewModels;
-using System.ComponentModel;
 
 namespace Graphics.Views;
 
