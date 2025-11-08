@@ -67,7 +67,7 @@ public static class Consts
         /// <summary>
         /// The initial speed of moving entities in units per frame.
         /// </summary>
-        public const float InitialSpeed = 6f;
+        public const float InitialSpeed = 12f;
 
         /// <summary>
         /// The initial direction of movement.

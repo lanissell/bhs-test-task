@@ -19,62 +19,11 @@ public class CollisionSystem(EcsWorld world) : IEcsRunSystem
     private readonly EcsPool<CollisionComponent> collisionsPool = world.GetPool<CollisionComponent>();
     private readonly EcsPool<MovementComponent> movementsPool = world.GetPool<MovementComponent>();
 
-    private int frame;
-
-    /// <summary>
-    /// Executes collision detection logic for all movable entities.
-    /// </summary>
-    /// <param name="systems">The ECS systems instance.</param>
-    public void Run(IEcsSystems systems)
+    private struct CollisionInfo
     {
-        unchecked { frame++; }
-
-        foreach (int entityA in movableEntities)
-        {
-            ProcessEntity(entityA);
-        }
-    }
-
-    private void ProcessEntity(int entityA)
-    {
-        ref var wrapperA = ref physicsObjectsPool.Get(entityA);
-        var physicsObjA = wrapperA.Component;
-
-        ref var collisionA = ref collisionsPool.Get(entityA);
-        ref var movementA = ref movementsPool.Get(entityA);
-
-        ResetCollisionInfo(ref collisionA);
-        movementA.RemainingDistance = 0f;
-
-        Vector2 delta = CalculateMovementDelta(ref movementA);
-        if (delta == Vector2.Zero)
-            return;
-
-        var result = PerformContinuousCollisionDetection(entityA, physicsObjA, delta);
-
-        if (result.Collided)
-        {
-            collisionA.OtherEntity = result.HitEntity;
-            collisionA.CollisionNormal = result.HitNormal;
-            collisionA.CollisionFrame = frame;
-
-            movementA.RemainingDistance = result.RemainingDistance;
-        }
-    }
-
-    private void ResetCollisionInfo(ref CollisionComponent collision)
-    {
-        collision.OtherEntity = -1;
-        collision.CollisionNormal = Vector2.Zero;
-        collision.CollisionFrame = frame;
-    }
-
-    private static Vector2 CalculateMovementDelta(ref MovementComponent movement)
-    {
-        Vector2 dir = movement.Direction;
-        if (dir != Vector2.Zero)
-            dir = Vector2.Normalize(dir);
-        return dir * movement.Speed;
+        public int HitEntity;
+        public Vector2 Normal;
+        public Vector2 ContactPoint;
     }
 
     private struct CcdResult
@@ -83,6 +32,48 @@ public class CollisionSystem(EcsWorld world) : IEcsRunSystem
         public int HitEntity;
         public Vector2 HitNormal;
         public float RemainingDistance;
+    }
+
+    /// <summary>
+    /// Executes collision detection logic for all movable entities.
+    /// </summary>
+    /// <param name="systems">The ECS systems instance.</param>
+    public void Run(IEcsSystems systems)
+    {
+        foreach (int entityA in movableEntities)
+        {
+            ref var wrapperA = ref physicsObjectsPool.Get(entityA);
+            var physicsObjA = wrapperA.Component;
+
+            ref var collisionA = ref collisionsPool.Get(entityA);
+            ref var movementA = ref movementsPool.Get(entityA);
+
+            collisionA.OtherEntity = -1;
+            collisionA.CollisionNormal = Vector2.Zero;
+            movementA.RemainingDistance = 0f;
+
+            Vector2 delta = CalculateMovementDelta(ref movementA);
+            if (delta == Vector2.Zero)
+                return;
+
+            var result = PerformContinuousCollisionDetection(entityA, physicsObjA, delta);
+
+            if (result.Collided)
+            {
+                collisionA.OtherEntity = result.HitEntity;
+                collisionA.CollisionNormal = result.HitNormal;
+
+                movementA.RemainingDistance = result.RemainingDistance;
+            }
+        }
+    }
+
+    private static Vector2 CalculateMovementDelta(ref MovementComponent movement)
+    {
+        Vector2 dir = movement.Direction;
+        if (dir != Vector2.Zero)
+            dir = Vector2.Normalize(dir);
+        return dir * movement.Speed;
     }
 
     private CcdResult PerformContinuousCollisionDetection(
@@ -137,13 +128,6 @@ public class CollisionSystem(EcsWorld world) : IEcsRunSystem
         // No collision detected, set final position
         physicsObjA.SceneObject.SetPosition(endPos);
         return result;
-    }
-
-    private struct CollisionInfo
-    {
-        public int HitEntity;
-        public Vector2 Normal;
-        public Vector2 ContactPoint;
     }
 
     private bool TryFindCollision(

@@ -8,14 +8,15 @@
     ".NETCoreApp,Version=v9.0": {
       "Graphics/1.0.0": {
         "dependencies": {
+          "App": "1.0.0",
           "Avalonia": "11.3.6",
           "Avalonia.Desktop": "11.3.6",
           "Avalonia.Diagnostics": "11.3.6",
           "Avalonia.Fonts.Inter": "11.3.6",
           "Avalonia.Themes.Fluent": "11.3.6",
           "CommunityToolkit.Mvvm": "8.2.1",
-          "LeoECS": "1.0.0",
-          "PhysicsEngine": "1.0.0"
+          "Core": "1.0.0",
+          "LeoECS": "1.0.0"
         },
         "runtime": {
           "Graphics.dll": {}
@@ -447,29 +448,32 @@
           }
         }
       },
+      "App/1.0.0": {
+        "dependencies": {
+          "CommunityToolkit.Mvvm": "8.2.1",
+          "Core": "1.0.0"
+        },
+        "runtime": {
+          "App.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Core/1.0.0": {
+        "dependencies": {
+          "LeoECS": "1.0.0"
+        },
+        "runtime": {
+          "Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "LeoECS/1.0.0": {
         "runtime": {
           "LeoECS.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "Model/1.0.0": {
-        "runtime": {
-          "Model.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "PhysicsEngine/1.0.0": {
-        "dependencies": {
-          "LeoECS": "1.0.0",
-          "Model": "1.0.0"
-        },
-        "runtime": {
-          "PhysicsEngine.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -686,17 +690,17 @@
       "path": "tmds.dbus.protocol/0.21.2",
       "hashPath": "tmds.dbus.protocol.0.21.2.nupkg.sha512"
     },
+    "App/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "LeoECS/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Model/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "PhysicsEngine/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
